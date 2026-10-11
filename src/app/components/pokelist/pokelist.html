@@ -1,0 +1,11 @@
+<div class="container">
+  <div class="row">
+    @for (obj of pokeList()?.results; track obj.name) {
+      <div class="col-md-6 col-lg-2">
+        <div class="card">
+          <span class="card-title">{{ obj.name }}</span>
+        </div>
+      </div>
+    }
+  </div>
+</div>
