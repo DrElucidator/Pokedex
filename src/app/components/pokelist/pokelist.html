@@ -1,9 +1,23 @@
 <div class="container">
-  <div class="row">
-    @for (obj of pokeList()?.results; track obj.name) {
+  <div class="row g-3">
+    @for (pkm of pokeList(); track pkm.id) {
       <div class="col-md-6 col-lg-2">
-        <div class="card">
-          <span class="card-title">{{ obj.name }}</span>
+        <div class="card p-3 text-center">
+          <span class="fs-6 fw-medium card-title">{{ pkm.name }}</span>
+
+          <div class="d-flex justify-content-center gap-2">
+            @for (type of pkm.types; track type) {
+                <span class="badge rounded-pill text-light">{{ type }}</span>
+            }
+          </div>
+
+          @if (pkm.sprite) {
+            <img [src]="pkm.sprite" [alt]="pkm.name">
+          }
+          @else {
+            <p>Image not found</p>
+          }
+
         </div>
       </div>
     }
