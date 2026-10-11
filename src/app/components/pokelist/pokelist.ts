@@ -64,4 +64,9 @@ export class Pokelist {
     ),
     { initialValue: null },
   );
+
+  protected displayTitleCase(text: string): string {
+    // (/\b\w/g) = regex to find the first letter within a text
+    return text.toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
+  }
 }
