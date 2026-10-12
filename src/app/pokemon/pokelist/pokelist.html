@@ -2,22 +2,26 @@
   <div class="row g-3">
     @for (pkm of pokeList(); track pkm.id) {
       <div class="col-md-6 col-lg-2">
-        <div class="card p-3 text-center">
+        <div
+          class="card p-3 text-center"
+          [style.border]="'2px solid transparent'"
+          [style.background]="pkm.background"
+        >
           <span class="fs-6 fw-medium card-title">{{ pkm.displayName }}</span>
 
           <div class="d-flex justify-content-center gap-2">
             @for (type of pkm.types; track type.name) {
-                <span class="badge rounded-pill text-light">{{ type.displayName }}</span>
+              <span class="badge rounded-pill text-light" [style.background-color]="type.color">{{
+                type.displayName
+              }}</span>
             }
           </div>
 
           @if (pkm.imgUrl) {
-            <img [src]="pkm.imgUrl" [alt]="pkm.imgAlt">
-          }
-          @else {
+            <img [src]="pkm.imgUrl" [alt]="pkm.imgAlt" />
+          } @else {
             <p>Image not found</p>
           }
-
         </div>
       </div>
     }
