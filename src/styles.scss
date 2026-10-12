@@ -44,17 +44,19 @@
   $navbar-light-brand-color: #f5f7fb,
   $navbar-light-brand-hover-color: #f6c945
 );
+
 @use 'bootstrap-icons';
 
 @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Oxanium:wght@200..800&display=swap');
 
 :root {
   --pokedex-red: #dc3545;
-  --pokedex-red-dark: #a61e3d;
+  --pokedex-red-dark: #a61e2d;
   --pokedex-blue: #3d7eff;
   --pokedex-yellow: #f6c945;
   --pokedex-surface: #182033;
   --pokedex-surface-raised: #202b42;
+  --pokedex-text: #f5f7fb;
   --pokedex-text-muted: #aeb8cb;
   --pokedex-glow: rgba(61, 126, 255, 0.35);
 
@@ -65,49 +67,10 @@
 body {
   min-height: 100vh;
   background-color: var(--bs-body-bg);
-  background-image:
-    radial-gradient(circle at 0% 0%, rgba(61, 126, 255, 0.16), transparent 28rem),
-    radial-gradient(circle at 100% 0%, rgba(220, 53, 69, 0.14), transparent 24rem);
-}
 
-.navbar-brand {
-  font-family: var(--pokedex-font-display);
-}
+  background:
+    radial-gradient(circle at 20% 20%, var(--bs-tertiary-bg) 0 2px, transparent 3px),
+    var(--bs-body-bg);
 
-.navbar.bg-body-tertiary {
-  background-color: var(--pokedex-surface) !important;
-  border-bottom: 1px solid rgba(220, 53, 69, 0.45);
-  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.22);
-}
-
-.navbar .nav-link {
-  color: var(--pokedex-text-muted);
-  font-family: var(--pokedex-font-display);
-}
-
-.navbar .nav-link.active {
-  color: var(--pokedex-text);
-}
-
-.navbar-toggler {
-  border-color: rgba(245, 247, 251, 0.35);
-}
-
-.card {
-  --bs-card-bg: var(--pokedex-surface);
-  min-height: 100%;
-  box-shadow: 0 0.75rem 2rem rgba(0, 0, 0, 0.28);
-}
-
-.card img {
-  width: 100%;
-  max-height: 10rem;
-  object-fit: contain;
-  image-rendering: pixelated;
-  user-select: none;
-  filter: drop-shadow(0 0.75rem 0.75rem rgba(0, 0, 0, 0.3));
-}
-
-.card-title {
-  font-family: var(--pokedex-font-display);
+  background-size: 32px 32px;
 }

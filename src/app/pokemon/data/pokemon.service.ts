@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, InjectionToken } from '@angular/core';
-import { forkJoin, map, switchMap } from 'rxjs';
+import { forkJoin, map, Observable, switchMap } from 'rxjs';
 import { Pokemon } from '../pokemon.model';
 import { UrlObjRequest, UrlPokemon } from './pokemon.dto';
 
@@ -11,7 +11,7 @@ function mapPokeRequest(dto: UrlPokemon): Pokemon {
           id: dto.id,
           name: dto.name,
           types: dto.types.map((item) => item.type.name),
-          sprite: dto.sprites.front_default,
+          spriteUrl: dto.sprites.front_default,
         }
 }
 

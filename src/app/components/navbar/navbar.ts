@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 
 interface NavbarItem {
   title: string;
@@ -8,12 +8,19 @@ interface NavbarItem {
 @Component({
   imports: [],
   selector: 'app-navbar',
+  styleUrl: './navbar.scss',
   templateUrl: './navbar.html',
 })
 export class Navbar {
-  protected readonly navbarItems: NavbarItem[] = [
-    {
-      title: 'Home', url: '#'
-    }
-  ] 
+  protected readonly navbarItems: NavbarItem[] = [{ title: 'Home', url: '#' }];
+
+  protected readonly menuOpen = signal(false);
+
+  protected menuToggle(): void {
+    this.menuOpen.update((open) => !open);
+  }
+
+  protected menuClose(): void {
+    this.menuOpen.set(false);
+  }
 }
