@@ -1,10 +1,25 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { ApplicationConfig, Component, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { POKE_API_URL } from './pokemon/data/pokemon.service';
 import { Routes } from '@angular/router';
+import { Pokelist } from './pokemon/pokelist/pokelist';
 
-const routes: Routes = [];
+const routes: Routes = [
+  {
+    path: '',
+    redirectTo: 'pokemon',
+    pathMatch: 'full'
+  },
+  {
+    path: 'pokemon',
+    loadComponent: () => import('./pokemon/pokelist/pokelist').then((component) => component.Pokelist)
+  },
+  {
+    path: 'pokemon/:name',
+    loadComponent: () => import('./pokemon/pokedetails/pokedetails').then((component) => component.PokeDetails)
+  }
+];
 
 export const appConfig: ApplicationConfig = {
   providers: [

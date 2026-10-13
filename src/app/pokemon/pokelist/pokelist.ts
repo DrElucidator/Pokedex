@@ -4,6 +4,7 @@ import { PokemonService } from '../data/pokemon.service';
 import { PkmTypeViewModel, Pokemon } from '../pokemon.model';
 import { map } from 'rxjs';
 import { GetTypeBackgroundColor, displayTitleCase, toTypesViewModel } from '../pokemon.utility';
+import { RouterLink } from '@angular/router';
 
 interface PkmCardViewModel {
   readonly id: number;
@@ -31,9 +32,9 @@ function toCardViewModel(dto: Pokemon): PkmCardViewModel {
 }
 
 @Component({
-  imports: [],
+  imports: [RouterLink],
   selector: 'app-pokelist',
-  styleUrl: './pokeList.scss',
+  styleUrl: './pokelist.scss',
   templateUrl: './pokelist.html',
 })
 export class Pokelist {
