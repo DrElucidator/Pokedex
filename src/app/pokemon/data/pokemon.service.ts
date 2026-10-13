@@ -50,7 +50,7 @@ export class PokemonService {
   getByName(name: string): Observable<PkmDetails> {
     const nameNormalized = name.trim().toLowerCase();
 
-    const fullUrl = '${this.apiUrl}${nameNormalized}';
+    const fullUrl = `${this.apiUrl}${nameNormalized}`;
 
     return this.http.get<UrlPokemon>(fullUrl).pipe(map(mapPokeDetailsRequest));
   }
