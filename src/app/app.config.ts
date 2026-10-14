@@ -1,9 +1,8 @@
-import { ApplicationConfig, Component, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { POKE_API_URL } from './pokemon/data/pokemon.service';
 import { Routes } from '@angular/router';
-import { Pokelist } from './pokemon/pokelist/pokelist';
 
 const routes: Routes = [
   {

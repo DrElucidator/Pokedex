@@ -42,7 +42,6 @@ interface PkmDetailsViewModel {
   readonly audioUrl: string | null;
   readonly height: string;
   readonly weight: string;
-  readonly types: readonly PkmTypeViewModel[];
   readonly abilities: readonly PkmAbilityViewModel[];
   readonly stats: readonly PkmStatViewModel[];
   readonly previous: PkmNavigationViewModel | null;
@@ -115,11 +114,10 @@ function toDetailsViewModel(
     audioUrl: dto.audioUrl,
     height: toPkmHeight(dto.height),
     weight: toPkmWeight(dto.weight),
-    types: types,
     abilities: dto.abilities.map((name) => ({ name: name, displayName: displayTitleCase(name) })),
     stats: dto.stats.map(({ name, baseValue }) => ({
       name: name,
-      displayName: displayTitleCase(name),
+      displayName: toStatName(name),
       value: baseValue,
       percentage: getStatPercentage(baseValue),
     })),
