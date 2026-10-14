@@ -1,12 +1,13 @@
-import { map, switchMap } from 'rxjs';
+import { catchError, forkJoin, map, Observable, of, switchMap } from 'rxjs';
 
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 
 import { PokemonService } from '../data/pokemon.service';
 import { PkmDetails, PkmTypeViewModel } from '../pokemon.model';
 import { displayTitleCase, GetTypeBackgroundColor, toTypesViewModel } from '../pokemon.utility';
+import { FavService } from '../favorites/favlist.service';
 
 interface PkmAbilityViewModel {
   readonly name: string;
@@ -18,6 +19,15 @@ interface PkmStatViewModel {
   readonly displayName: string;
   readonly value: number;
   readonly percentage: number;
+}
+
+interface PkmNavigationViewModel {
+  readonly id: number;
+  readonly number: string;
+  readonly name: string;
+  readonly displayName: string;
+  readonly spriteUrl: string | null;
+  readonly spriteAlt: string;
 }
 
 interface PkmDetailsViewModel {
@@ -35,6 +45,8 @@ interface PkmDetailsViewModel {
   readonly types: readonly PkmTypeViewModel[];
   readonly abilities: readonly PkmAbilityViewModel[];
   readonly stats: readonly PkmStatViewModel[];
+  readonly previous: PkmNavigationViewModel | null;
+  readonly next: PkmNavigationViewModel | null;
 }
 
 const STAT_LABELS: Readonly<Record<string, string>> = {
@@ -66,7 +78,28 @@ function getStatPercentage(value: number): number {
   return Math.min((value / 255) * 100, 100);
 }
 
-function toDetailsViewModel(dto: PkmDetails): PkmDetailsViewModel {
+function toNavigationViewModel(dto: PkmDetails | null): PkmNavigationViewModel | null {
+  if (!dto) {
+    return null;
+  }
+
+  const displayName = displayTitleCase(dto.name);
+
+  return {
+    id: dto.id,
+    number: toPkmNumber(dto.id),
+    name: dto.name,
+    displayName: displayName,
+    spriteUrl: dto.spriteUrl,
+    spriteAlt: `${displayName}'s sprite`,
+  };
+}
+
+function toDetailsViewModel(
+  dto: PkmDetails,
+  previous: PkmDetails | null,
+  next: PkmDetails | null,
+): PkmDetailsViewModel {
   const displayName = displayTitleCase(dto.name);
   const types = toTypesViewModel(dto.types);
 
@@ -90,6 +123,9 @@ function toDetailsViewModel(dto: PkmDetails): PkmDetailsViewModel {
       value: baseValue,
       percentage: getStatPercentage(baseValue),
     })),
+
+    previous: toNavigationViewModel(previous),
+    next: toNavigationViewModel(next),
   };
 }
 
@@ -102,12 +138,42 @@ function toDetailsViewModel(dto: PkmDetails): PkmDetailsViewModel {
 export class PokeDetails {
   private readonly route = inject(ActivatedRoute);
   private readonly pokemonService = inject(PokemonService);
+  private readonly favService = inject(FavService);
 
   protected readonly pokemon = toSignal(
     this.route.paramMap.pipe(
       map((params) => params.get('name') ?? ''),
       switchMap((name) => this.pokemonService.getByName(name)),
-      map(toDetailsViewModel),
+      switchMap((pokemon) =>
+        forkJoin({
+          pokemon: of(pokemon),
+          previous: this.getNeighbor(pokemon.id - 1),
+          next: this.getNeighbor(pokemon.id + 1),
+        }),
+      ),
+      map(({ pokemon, previous, next }) => toDetailsViewModel(pokemon, previous, next)),
     ),
   );
+
+  readonly favorited = computed(() => this.favService.favorited(this.pokemon()!.id));
+
+  switchFavStatus(): void {
+    const selectedPokemon = this.pokemon();
+
+    if (!selectedPokemon) return;
+
+    this.favService.switchFav({
+      id: selectedPokemon.id,
+      name: selectedPokemon.name,
+      spriteUrl: selectedPokemon.spriteUrl
+    });
+  }
+
+  private getNeighbor(id: number): Observable<PkmDetails | null> {
+    if (id < 1) {
+      return of(null);
+    }
+
+    return this.pokemonService.getById(id).pipe(catchError(() => of(null)));
+  }
 }

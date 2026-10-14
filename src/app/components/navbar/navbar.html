@@ -19,7 +19,18 @@
       <ul class="navbar-nav ms-auto">
         @for (item of navbarItems; track item.title) {
           <li class="nav-item">
-            <a class="nav-link" [href]="item.url" (click)="menuClose()">{{ item.title }}</a>
+            <a
+              class="nav-link"
+              [routerLink]="item.title === 'Home' ? item.url : null"
+              [href]="item.title === 'Favorites' ? item.url : null"
+              (click)="
+                item.title === 'Favorites'
+                  ? onNavbarItemClick(item, $event)
+                  : menuClose()
+              "
+            >
+              {{ item.title }}
+            </a>
           </li>
         }
       </ul>

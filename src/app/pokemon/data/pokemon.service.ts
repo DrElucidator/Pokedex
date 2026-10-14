@@ -7,12 +7,12 @@ import { UrlObjRequest, UrlPokemon } from './pokemon.dto';
 export const POKE_API_URL = new InjectionToken<string>('POKE_API_URL');
 
 function mapPokeRequest(dto: UrlPokemon): Pokemon {
-    return {
-          id: dto.id,
-          name: dto.name,
-          types: dto.types.map((item) => item.type.name),
-          spriteUrl: dto.sprites.front_default,
-        }
+  return {
+    id: dto.id,
+    name: dto.name,
+    types: dto.types.map((item) => item.type.name),
+    spriteUrl: dto.sprites.front_default,
+  };
 }
 
 function mapPokeDetailsRequest(dto: UrlPokemon): PkmDetails {
@@ -23,14 +23,12 @@ function mapPokeDetailsRequest(dto: UrlPokemon): PkmDetails {
     height: dto.height,
     weight: dto.weight,
     abilities: dto.abilities.map(({ ability }) => ability.name),
-    stats: dto.stats.map(({ stat, base_stat }) => ({ name: stat.name, baseValue: base_stat }))
+    stats: dto.stats.map(({ stat, base_stat }) => ({ name: stat.name, baseValue: base_stat })),
   };
- }
+}
 
 @Injectable({ providedIn: 'root' })
-
 export class PokemonService {
-
   private readonly http = inject(HttpClient);
   private readonly apiUrl = inject(POKE_API_URL);
 
@@ -41,17 +39,21 @@ export class PokemonService {
 
         return forkJoin(requests);
       }),
-      map((details: UrlPokemon[]): Pokemon[] =>
-        details.map(mapPokeRequest)
-      ),
+      map((details: UrlPokemon[]): Pokemon[] => details.map(mapPokeRequest)),
     );
   }
 
   getByName(name: string): Observable<PkmDetails> {
     const nameNormalized = name.trim().toLowerCase();
 
-    const fullUrl = `${this.apiUrl}${nameNormalized}`;
+    return this.http
+      .get<UrlPokemon>(`${this.apiUrl}${encodeURIComponent(nameNormalized)}`)
+      .pipe(map(mapPokeDetailsRequest));
+  }
 
-    return this.http.get<UrlPokemon>(fullUrl).pipe(map(mapPokeDetailsRequest));
+  getById(id: number): Observable<PkmDetails> {
+    return this.http
+      .get<UrlPokemon>(`${this.apiUrl}${id}`)
+      .pipe(map(mapPokeDetailsRequest));
   }
 }

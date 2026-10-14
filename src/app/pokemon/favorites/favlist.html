@@ -1,0 +1,27 @@
+@if (favlistActivated()) {
+  @if (favorites().length > 0) {
+    <section aria-labelledby="favorites-title">
+      <div class="container py-3">
+        <div class="d-flex align-items-center justify-content-between gap-3 mb-3">
+          <h2 id="favorites-title" class="h5 mb-0">My Favorites</h2>
+          <span class="small">{{ favorites().length }} pokémon</span>
+        </div>
+
+        <div>
+          @for (favorite of favorites(); track favorite.id) {
+            <article>
+              <a [routerLink]="['/pokemon', favorite.name]">
+                @if (favorite.spriteUrl; as sprite) {
+                  <img [src]="sprite" [alt]="`${displayTitleCase(favorite.name)} sprite`" />
+                } @else {
+                  <span aria-hidden="true">?</span>
+                }
+                <span>{{ displayTitleCase(favorite.name) }}</span>
+              </a>
+            </article>
+          }
+        </div>
+      </div>
+    </section>
+  }
+}

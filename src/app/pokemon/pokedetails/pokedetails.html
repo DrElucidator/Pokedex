@@ -1,5 +1,5 @@
 <div class="pokedetails-page container py-4 py-lg-5">
-  <a class="pokemon-back-link d-inline-flex align-items-center gap-2 mb-4" routerLink="/">
+  <a class="pokeback-link d-inline-flex align-items-center gap-2 mb-4" routerLink="/">
     <i class="bi bi-arrow-left"></i>
     Go back
   </a>
@@ -39,6 +39,25 @@
 
           <div class="d-flex align-items-start justify-content-between gap-3 mb-3">
             <h1 class="display-4 mb-0">{{ pokemon.displayName }}</h1>
+
+            <button
+              type="button"
+              [attr.aria-pressed]="favorited()"
+              [attr.aria-label]="
+                favorited()
+                  ? `Unfavorite ${pokemon.displayName}`
+                  : `Favorite ${pokemon.displayName}`
+              "
+              [attr.title]="
+                favorited()
+                  ? `Unfavorite ${pokemon.displayName}`
+                  : `Favorite ${pokemon.displayName}`
+              "
+
+              (click)="switchFavStatus()"
+            >
+              <i class="bi me-1" [class]="favorited() ? 'bi-star-fill' : 'bi-star'"></i>
+            </button>
           </div>
 
           <div class="row g-3 mb-4">
@@ -89,5 +108,59 @@
         </div>
       </div>
     </article>
+
+    @if (pokemon.previous || pokemon.next) {
+      <nav class="row g-3 mt-4" aria-label="Pokémon navigation">
+        @if (pokemon.previous; as previous) {
+          <div class="col-12 col-sm-6">
+            <a
+              class="pokepagination__link d-flex flex-column justify-content-center gap-1 py-3 text-decoration-none"
+              [routerLink]="['/pokemon', previous.name]"
+            >
+              <div class="pokepagination__content d-flex align-items-center">
+                @if (previous.spriteUrl; as spriteUrl) {
+                  <img
+                    class="pokepagination__sprite"
+                    [src]="spriteUrl"
+                    [alt]="previous.spriteAlt"
+                  />
+                }
+                <span class="pokepagination__copy d-flex flex-column gap-1">
+                  <span class="pokepagination__direction small">
+                    <i class="bi bi-arrow-left"></i>
+                    Previous
+                  </span>
+                  <strong class="text-truncate"
+                    >{{ previous.number }} {{ previous.displayName }}</strong
+                  >
+                </span>
+              </div></a
+            >
+          </div>
+        }
+
+        @if (pokemon.next; as next) {
+          <div class="col-12 col-sm-6">
+            <a
+              class="pokepagination__link d-flex flex-column justify-content-center gap-1 py-3 align-items-end text-start text-decoration-none"
+              [routerLink]="['/pokemon', next.name]"
+            >
+              <div class="pokepagination__content d-flex flex-row-reverse align-items-center">
+                @if (next.spriteUrl; as spriteUrl) {
+                  <img class="pokepagination__sprite" [src]="spriteUrl" [alt]="next.spriteAlt" />
+                }
+                <span class="pokepagination__copy d-flex flex-column gap-1">
+                  <span class="pokepagination__direction small">
+                    <i class="bi bi-arrow-right"></i>
+                    Next
+                  </span>
+                  <strong class="text-truncate">{{ next.number }} {{ next.displayName }}</strong>
+                </span>
+              </div></a
+            >
+          </div>
+        }
+      </nav>
+    }
   }
 </div>

@@ -3,7 +3,7 @@
     @for (pkm of pokeList(); track pkm.id) {
       <div class="col-md-6 col-lg-2">
         <a
-          class="pokemon-card card p-3 text-center text-decoration-none"
+          class="pokecard card p-3 text-center text-decoration-none"
           [style.border]="'2px solid transparent'"
           [style.background]="pkm.background"
           [routerLink]="['/pokemon', pkm.name]"

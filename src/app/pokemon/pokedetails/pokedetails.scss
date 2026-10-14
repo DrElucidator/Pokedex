@@ -2,13 +2,13 @@
  max-width: 72rem;
 }
 
-.pokemon-back-link {
+.pokeback-link {
     color: var(--pokedex-text-muted);
     font-family: var(--pokedex-font-display);
     text-decoration: none;
 }
 
-.pokemon-back-link:hover {
+.pokeback-link:hover {
     color: var(--pokedex-yellow);
 }
 
@@ -25,7 +25,7 @@
         var(--pokedex-surface-raised);
 }
 
-.pokedetails__image {
+.pokedetails__img {
   width: min(100%, 23rem);
   max-height: 25rem;
   filter: drop-shadow(0 1.25rem 1.25rem rgba(0, 0, 0, 0.35));
@@ -98,6 +98,7 @@
 .pokepagination__content {
   gap: 0.75rem;
   min-width: 0;
+  width: 100%;
 }
 
 .pokepagination__sprite {
