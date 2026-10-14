@@ -42,6 +42,8 @@
 
             <button
               type="button"
+              class="favorite-button rounded-circle align-items-center"
+              [class.favorite-button-active]="favorited()"
               [attr.aria-pressed]="favorited()"
               [attr.aria-label]="
                 favorited()
@@ -56,7 +58,7 @@
 
               (click)="switchFavStatus()"
             >
-              <i class="bi me-1" [class]="favorited() ? 'bi-star-fill' : 'bi-star'"></i>
+              <i class="bi fs-3" [class]="favorited() ? 'bi-star-fill' : 'bi-star'"></i>
             </button>
           </div>
 

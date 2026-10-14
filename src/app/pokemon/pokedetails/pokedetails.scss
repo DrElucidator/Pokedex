@@ -1,28 +1,28 @@
 .pokedetails-page {
- max-width: 72rem;
+  max-width: 72rem;
 }
 
 .pokeback-link {
-    color: var(--pokedex-text-muted);
-    font-family: var(--pokedex-font-display);
-    text-decoration: none;
+  color: var(--pokedex-text-muted);
+  font-family: var(--pokedex-font-display);
+  text-decoration: none;
 }
 
 .pokeback-link:hover {
-    color: var(--pokedex-yellow);
+  color: var(--pokedex-yellow);
 }
 
 .pokedetails {
-    background: var(--pokedex-surface);
-    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.3);
+  background: var(--pokedex-surface);
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.3);
 }
 
 .pokedetails__visual {
-    min-height: 24rem;
+  min-height: 24rem;
 
-    background: 
-        radial-gradient(circle at center, rgba(61, 126, 255, 0.26), transparent 62%),
-        var(--pokedex-surface-raised);
+  background:
+    radial-gradient(circle at center, rgba(61, 126, 255, 0.26), transparent 62%),
+    var(--pokedex-surface-raised);
 }
 
 .pokedetails__img {
@@ -122,4 +122,35 @@
 .pokepagination__direction {
   color: var(--pokedex-text-muted);
   font-family: var(--pokedex-font-display);
+}
+
+.favorite-button {
+  min-width: 2.25rem;
+  min-height: 2.25rem;
+  padding: 0.35rem 0.65rem;
+
+  border-color: transparent;
+
+  color: rgba(255, 255, 0, 0.150);
+  background-color: transparent;
+
+  font-weight: bolder;
+
+  transition: 
+    180ms ease,
+    color 180ms ease;
+}
+
+.favorite-button:hover {
+  color: var(--pokedex-text);
+}
+
+.favorite-button-active {
+  color: rgba(236, 213, 0, 0.87);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .favorite-button {
+    transition: none;
+  }
 }

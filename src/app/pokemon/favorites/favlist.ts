@@ -6,6 +6,7 @@ import { displayTitleCase } from '../pokemon.utility';
 @Component({
   imports: [RouterLink],
   selector: 'app-favlist',
+  styleUrl: './favlist.scss',
   templateUrl: './favlist.html',
 })
 export class Favlist {

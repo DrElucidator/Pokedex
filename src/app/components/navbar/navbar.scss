@@ -16,6 +16,13 @@
 .navbar .nav-link {
   color: var(--pokedex-text-muted);
   font-family: var(--pokedex-font-display);
+  cursor: pointer;
+  transition: color 180ms ease, background-color 180ms ease;
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link:focus-visible {
+  color: var(--pokedex-yellow);
 }
 
 .navbar .nav-link.active {
@@ -24,4 +31,10 @@
 
 .navbar-toggler {
   border-color: rgba(245, 247, 251, 0.35);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-link {
+    transition: none;
+  }
 }
