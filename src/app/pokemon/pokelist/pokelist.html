@@ -1,6 +1,54 @@
 <div class="container py-5">
+  <section class="pokemon-filters card border-0 mb-4">
+    <div class="card-body p-3 p-md-4">
+      <div class="row g-3 align-items-end">
+        <div class="col-12 col-lg-5">
+          <label class="form-label" for="pokemon-search">Search Pokémon</label>
+          <input
+            id="pokemon-search"
+            class="form-control"
+            type="search"
+            [value]="termoBusca()"
+            placeholder="Name or National Dex number"
+            (input)="atualizarBusca($event)"
+          />
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-3">
+          <label class="form-label" for="pokemon-generation">Generation</label>
+          <select
+            id="pokemon-generation"
+            class="form-select"
+            [value]="geracaoSelecionada()"
+            (change)="atualizarGeracao($event)"
+          >
+            <option value="all">All generations</option>
+            @for (generation of generations; track generation.value) {
+              <option [value]="generation.value">{{ generation.label }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-4">
+          <label class="form-label" for="pokemon-regional-dex">Regional Pokédex</label>
+          <select
+            id="pokemon-regional-dex"
+            class="form-select"
+            [value]="pokedexRegionalSelecionada()"
+            (change)="atualizarPokedexRegional($event)"
+          >
+            <option value="all">All regions</option>
+            @for (pokedex of regionalPokedexes; track pokedex.value) {
+              <option [value]="pokedex.value">{{ pokedex.label }}</option>
+            }
+          </select>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <div class="row g-3">
-    @for (pkm of pokeList(); track pkm.id) {
+    @for (pkm of pokemonFiltrados(); track pkm.id) {
       <div class="col-md-6 col-lg-2">
         <a
           class="pokecard card p-3 text-center text-decoration-none"
@@ -41,9 +89,15 @@
     }
   </div>
 
-  @if (emCarregamento() && pokeList().length >= 12) {
+  @if (filtrosCarregando()) {
+    <p class="loading-more text-center text-body-secondary mt-4 mb-0" aria-live="polite">
+      Applying filters...
+    </p>
+  } @else if (emCarregamento() && pokemonFiltrados().length >= 12) {
     <p class="loading-more text-center text-body-secondary mt-4 mb-0" aria-live="polite">
       Loading more Pokémon...
     </p>
+  } @else if (!emCarregamento() && pokemonFiltrados().length === 0) {
+    <p class="empty-result text-center mt-4 mb-0">No Pokémon found for the selected filters.</p>
   }
 </div>

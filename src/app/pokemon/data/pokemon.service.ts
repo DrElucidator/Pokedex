@@ -2,11 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, InjectionToken } from '@angular/core';
 import { from, map, mergeMap, Observable, scan, startWith, switchMap } from 'rxjs';
 import { PkmDetails, Pokemon } from '../pokemon.model';
-import { UrlObjRequest, UrlPokemon } from './pokemon.dto';
+import { UrlGeneration, UrlPokedex, UrlPokemon } from './pokemon.dto';
 
 export const POKE_API_URL = new InjectionToken<string>('POKE_API_URL');
+export const POKE_API_ROOT_URL = new InjectionToken<string>('POKE_API_ROOT_URL');
 
-const INITIAL_POKEMON_LIMIT = 151;
 const DETAILS_CONCURRENCY = 6;
 
 function mapPokeRequest(dto: UrlPokemon): Pokemon {
@@ -30,17 +30,29 @@ function mapPokeDetailsRequest(dto: UrlPokemon): PkmDetails {
   };
 }
 
+function getIdFromUrl(url: string): number {
+  const id = Number(url.split('/').filter(Boolean).at(-1));
+
+  if (!Number.isInteger(id)) {
+    throw new Error(`Unable to extract an identifier from ${url}.`);
+  }
+
+  return id;
+}
+
 @Injectable({ providedIn: 'root' })
 export class PokemonService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = inject(POKE_API_URL);
+  private readonly apiRootUrl = inject(POKE_API_ROOT_URL);
 
-  list(limit = INITIAL_POKEMON_LIMIT): Observable<Pokemon[]> {
-    return this.http.get<UrlObjRequest>(`${this.apiUrl}?limit=${limit}`).pipe(
-      switchMap(({ results }) =>
-        from(results).pipe(
+  list(): Observable<Pokemon[]> {
+    return this.http.get<UrlPokedex>(`${this.apiRootUrl}pokedex/national/`).pipe(
+      switchMap(({ pokemon_entries: entries }) =>
+        from(entries).pipe(
           mergeMap(
-            ({ url }) => this.http.get<UrlPokemon>(url).pipe(map(mapPokeRequest)),
+            ({ entry_number }) =>
+              this.http.get<UrlPokemon>(`${this.apiUrl}${entry_number}`).pipe(map(mapPokeRequest)),
             DETAILS_CONCURRENCY,
           ),
           scan(
@@ -51,6 +63,18 @@ export class PokemonService {
           startWith([] as Pokemon[]),
         ),
       ),
+    );
+  }
+
+  getGenerationIds(generation: string): Observable<ReadonlySet<number>> {
+    return this.http.get<UrlGeneration>(`${this.apiRootUrl}generation/${generation}/`).pipe(
+      map(({ pokemon_species }) => new Set(pokemon_species.map(({ url }) => getIdFromUrl(url)))),
+    );
+  }
+
+  getRegionalPokedexIds(pokedex: string): Observable<ReadonlySet<number>> {
+    return this.http.get<UrlPokedex>(`${this.apiRootUrl}pokedex/${pokedex}/`).pipe(
+      map(({ pokemon_entries }) => new Set(pokemon_entries.map(({ entry_number }) => entry_number))),
     );
   }
 

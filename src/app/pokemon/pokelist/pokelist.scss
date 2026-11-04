@@ -8,6 +8,23 @@
     box-shadow 180ms ease;
 }
 
+.pokemon-filters {
+  --bs-card-bg: var(--pokedex-surface);
+  box-shadow: 0 0.75rem 2rem rgba(0, 0, 0, 0.28);
+}
+
+.pokemon-filters .form-label {
+  font-family: var(--pokedex-font-display);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.pokemon-filters .form-control,
+.pokemon-filters .form-select {
+  min-height: 2.75rem;
+}
+
 .pokecard:hover {
   transform: translateY(-0.25rem);
 }
@@ -60,6 +77,11 @@
 }
 
 .loading-more {
+  font-family: var(--pokedex-font-display);
+}
+
+.empty-result {
+  color: var(--pokedex-text-muted);
   font-family: var(--pokedex-font-display);
 }
 

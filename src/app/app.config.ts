@@ -1,23 +1,25 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
-import { POKE_API_URL } from './pokemon/data/pokemon.service';
+import { POKE_API_ROOT_URL, POKE_API_URL } from './pokemon/data/pokemon.service';
 import { Routes } from '@angular/router';
 
 const routes: Routes = [
   {
     path: '',
     redirectTo: 'pokemon',
-    pathMatch: 'full'
+    pathMatch: 'full',
   },
   {
     path: 'pokemon',
-    loadComponent: () => import('./pokemon/pokelist/pokelist').then((component) => component.Pokelist)
+    loadComponent: () =>
+      import('./pokemon/pokelist/pokelist').then((component) => component.Pokelist),
   },
   {
     path: 'pokemon/:name',
-    loadComponent: () => import('./pokemon/pokedetails/pokedetails').then((component) => component.PokeDetails)
-  }
+    loadComponent: () =>
+      import('./pokemon/pokedetails/pokedetails').then((component) => component.PokeDetails),
+  },
 ];
 
 export const appConfig: ApplicationConfig = {
@@ -27,7 +29,11 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(),
     {
       provide: POKE_API_URL,
-      useValue: 'https://pokeapi.co/api/v2/pokemon/'
-    }
-  ]
+      useValue: 'https://pokeapi.co/api/v2/pokemon/',
+    },
+    {
+      provide: POKE_API_ROOT_URL,
+      useValue: 'https://pokeapi.co/api/v2/',
+    },
+  ],
 };

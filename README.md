@@ -6,8 +6,10 @@ Aplicação web responsiva para explorar Pokémon, consultar detalhes e manter u
 
 ## Recursos
 
-- Catálogo progressivo dos 151 Pokémon iniciais.
+- Catálogo progressivo das 1.025 espécies da Pokédex Nacional.
 - Cards carregados gradualmente para priorizar a primeira visualização.
+- Busca local por nome ou número da Pokédex Nacional.
+- Filtros dinâmicos por geração e Pokédex regional.
 - Tela de detalhes com tipos, atributos, habilidades, dimensões e cries.
 - Favoritos persistidos no navegador com LocalStorage.
 - Interface responsiva com suporte a tema visual.

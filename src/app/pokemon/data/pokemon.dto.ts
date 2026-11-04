@@ -1,13 +1,20 @@
-export interface UrlObjResult {
-  name: string;
-  url: string;
+export interface UrlPokedexEntry {
+  readonly entry_number: number;
+  readonly pokemon_species: {
+    readonly name: string;
+    readonly url: string;
+  };
 }
 
-export interface UrlObjRequest {
-  count: number;
-  next: string | null;
-  preview: string | null;
-  results: UrlObjResult[];
+export interface UrlPokedex {
+  readonly pokemon_entries: readonly UrlPokedexEntry[];
+}
+
+export interface UrlGeneration {
+  readonly pokemon_species: readonly {
+    readonly name: string;
+    readonly url: string;
+  }[];
 }
 
 export interface UrlPokeType {
@@ -30,8 +37,8 @@ export interface UrlPokemon {
     readonly other?: {
       readonly 'official-artwork'?: {
         readonly front_default: string | null;
-      }
-    }
+      };
+    };
   };
 }
 
@@ -43,12 +50,12 @@ export interface UrlPokeCry {
 export interface UrlPokeAbility {
   readonly ability: {
     readonly name: string;
-  }
+  };
 }
 
 export interface UrlPokeStat {
   readonly base_stat: number;
   readonly stat: {
     readonly name: string;
-  }
+  };
 }
