@@ -1,6 +1,17 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, InjectionToken } from '@angular/core';
-import { from, map, mergeMap, Observable, scan, startWith, switchMap } from 'rxjs';
+import {
+  bufferCount,
+  concatMap,
+  from,
+  map,
+  mergeMap,
+  Observable,
+  scan,
+  startWith,
+  switchMap,
+  timer,
+} from 'rxjs';
 import { PkmDetails, Pokemon } from '../pokemon.model';
 import { UrlGeneration, UrlPokedex, UrlPokemon } from './pokemon.dto';
 
@@ -8,6 +19,8 @@ export const POKE_API_URL = new InjectionToken<string>('POKE_API_URL');
 export const POKE_API_ROOT_URL = new InjectionToken<string>('POKE_API_ROOT_URL');
 
 const DETAILS_CONCURRENCY = 6;
+const DETAILS_BATCH_SIZE = 6;
+const BACKGROUND_BATCH_PAUSE_MS = 150;
 
 function mapPokeRequest(dto: UrlPokemon): Pokemon {
   return {
@@ -50,10 +63,21 @@ export class PokemonService {
     return this.http.get<UrlPokedex>(`${this.apiRootUrl}pokedex/national/`).pipe(
       switchMap(({ pokemon_entries: entries }) =>
         from(entries).pipe(
-          mergeMap(
-            ({ entry_number }) =>
-              this.http.get<UrlPokemon>(`${this.apiUrl}${entry_number}`).pipe(map(mapPokeRequest)),
-            DETAILS_CONCURRENCY,
+          bufferCount(DETAILS_BATCH_SIZE),
+          concatMap((batch, batchIndex) =>
+            timer(batchIndex === 0 ? 0 : BACKGROUND_BATCH_PAUSE_MS).pipe(
+              switchMap(() =>
+                from(batch).pipe(
+                  mergeMap(
+                    ({ entry_number }) =>
+                      this.http
+                        .get<UrlPokemon>(`${this.apiUrl}${entry_number}`)
+                        .pipe(map(mapPokeRequest)),
+                    DETAILS_CONCURRENCY,
+                  ),
+                ),
+              ),
+            ),
           ),
           scan(
             (pokemon, current) =>
