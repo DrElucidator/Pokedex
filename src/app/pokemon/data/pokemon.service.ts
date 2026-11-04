@@ -1,10 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, InjectionToken } from '@angular/core';
-import { forkJoin, map, Observable, switchMap } from 'rxjs';
+import { from, map, mergeMap, Observable, scan, startWith, switchMap } from 'rxjs';
 import { PkmDetails, Pokemon } from '../pokemon.model';
 import { UrlObjRequest, UrlPokemon } from './pokemon.dto';
 
 export const POKE_API_URL = new InjectionToken<string>('POKE_API_URL');
+
+const INITIAL_POKEMON_LIMIT = 151;
+const DETAILS_CONCURRENCY = 6;
 
 function mapPokeRequest(dto: UrlPokemon): Pokemon {
   return {
@@ -32,14 +35,22 @@ export class PokemonService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = inject(POKE_API_URL);
 
-  list() {
-    return this.http.get<UrlObjRequest>(this.apiUrl).pipe(
-      switchMap((obj) => {
-        const requests = obj.results.map((r) => this.http.get<UrlPokemon>(r.url));
-
-        return forkJoin(requests);
-      }),
-      map((details: UrlPokemon[]): Pokemon[] => details.map(mapPokeRequest)),
+  list(limit = INITIAL_POKEMON_LIMIT): Observable<Pokemon[]> {
+    return this.http.get<UrlObjRequest>(`${this.apiUrl}?limit=${limit}`).pipe(
+      switchMap(({ results }) =>
+        from(results).pipe(
+          mergeMap(
+            ({ url }) => this.http.get<UrlPokemon>(url).pipe(map(mapPokeRequest)),
+            DETAILS_CONCURRENCY,
+          ),
+          scan(
+            (pokemon, current) =>
+              [...pokemon, current].sort((first, second) => first.id - second.id),
+            [] as Pokemon[],
+          ),
+          startWith([] as Pokemon[]),
+        ),
+      ),
     );
   }
 
@@ -52,8 +63,6 @@ export class PokemonService {
   }
 
   getById(id: number): Observable<PkmDetails> {
-    return this.http
-      .get<UrlPokemon>(`${this.apiUrl}${id}`)
-      .pipe(map(mapPokeDetailsRequest));
+    return this.http.get<UrlPokemon>(`${this.apiUrl}${id}`).pipe(map(mapPokeDetailsRequest));
   }
 }

@@ -1,8 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { PokemonService } from '../data/pokemon.service';
 import { PkmTypeViewModel, Pokemon } from '../pokemon.model';
-import { map } from 'rxjs';
+import { finalize, map } from 'rxjs';
 import { GetTypeBackgroundColor, displayTitleCase, toTypesViewModel } from '../pokemon.utility';
 import { RouterLink } from '@angular/router';
 
@@ -40,8 +40,17 @@ function toCardViewModel(dto: Pokemon): PkmCardViewModel {
 export class Pokelist {
   protected readonly pokemonService = inject(PokemonService);
 
+  protected readonly emCarregamento = signal(true);
+
   protected readonly pokeList = toSignal(
-    this.pokemonService.list().pipe(map((pokemon) => pokemon.map(toCardViewModel))),
+    this.pokemonService.list().pipe(
+      map((pokemon) => pokemon.map(toCardViewModel)),
+      finalize(() => this.emCarregamento.set(false)),
+    ),
     { initialValue: [] as PkmCardViewModel[] },
+  );
+
+  protected readonly esqueletos = computed(() =>
+    Array.from({ length: Math.max(0, 12 - this.pokeList().length) }),
   );
 }

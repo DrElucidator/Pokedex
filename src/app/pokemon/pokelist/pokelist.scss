@@ -21,6 +21,58 @@
   filter: drop-shadow(0 0.75rem 0.75rem rgba(0, 0, 0, 0.3));
 }
 
+.pokecard-skeleton {
+  min-height: 13.75rem;
+  overflow: hidden;
+}
+
+.skeleton-line,
+.skeleton-badge,
+.skeleton-image {
+  display: block;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.18) 20%,
+    rgba(255, 255, 255, 0.48) 50%,
+    rgba(255, 255, 255, 0.18) 80%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.25s ease-in-out infinite;
+}
+
+.skeleton-title {
+  width: 62%;
+  height: 1rem;
+  margin-inline: auto;
+}
+
+.skeleton-badge {
+  width: 3.75rem;
+  height: 1.25rem;
+}
+
+.skeleton-image {
+  width: 75%;
+  aspect-ratio: 1;
+  margin: 1.5rem auto 0;
+  border-radius: 1rem;
+}
+
+.loading-more {
+  font-family: var(--pokedex-font-display);
+}
+
+@keyframes skeleton-loading {
+  from {
+    background-position: 100% 0;
+  }
+
+  to {
+    background-position: -100% 0;
+  }
+}
+
 .card-title {
   font-family: var(--pokedex-font-display);
 }
@@ -28,5 +80,11 @@
 @media (prefers-reduced-motion: reduce) {
   .pokecard {
     transition: none;
+  }
+
+  .skeleton-line,
+  .skeleton-badge,
+  .skeleton-image {
+    animation: none;
   }
 }

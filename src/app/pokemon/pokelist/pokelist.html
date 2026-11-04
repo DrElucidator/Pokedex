@@ -26,5 +26,24 @@
         </a>
       </div>
     }
+
+    @for (esqueleto of esqueletos(); track $index) {
+      <div class="col-md-6 col-lg-2" aria-hidden="true">
+        <article class="pokecard pokecard-skeleton card p-3">
+          <span class="skeleton-line skeleton-title"></span>
+          <div class="d-flex justify-content-center gap-2 mt-2">
+            <span class="skeleton-badge"></span>
+            <span class="skeleton-badge"></span>
+          </div>
+          <span class="skeleton-image"></span>
+        </article>
+      </div>
+    }
   </div>
+
+  @if (emCarregamento() && pokeList().length >= 12) {
+    <p class="loading-more text-center text-body-secondary mt-4 mb-0" aria-live="polite">
+      Loading more Pokémon...
+    </p>
+  }
 </div>
